@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Tholcomb\Symple\Console;
+namespace Tholcomb\Symple\Console\Commands;
 
 use Pimple\Container;
 use Symfony\Component\Console\Command\Command;
@@ -16,6 +16,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tholcomb\Symple\Console\LazyCommandInterface;
 
 class ContainerDebugCommand extends Command implements LazyCommandInterface {
 	private const NAME = 'pimple.debug';

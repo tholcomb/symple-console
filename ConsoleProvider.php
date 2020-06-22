@@ -14,6 +14,7 @@ use Pimple\Container;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
+use Tholcomb\Symple\Console\Commands\ContainerDebugCommand;
 use Tholcomb\Symple\Core\AbstractProvider;
 use Tholcomb\Symple\Core\UnregisteredProviderException;
 use function Tholcomb\Symple\Core\class_implements_interface;

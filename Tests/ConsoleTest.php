@@ -13,8 +13,8 @@ namespace Tholcomb\Symple\Console\Tests;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
+use Tholcomb\Symple\Console\Commands\ContainerDebugCommand;
 use Tholcomb\Symple\Console\ConsoleProvider;
-use Tholcomb\Symple\Console\ContainerDebugCommand;
 use Tholcomb\Symple\Console\FrozenConsoleException;
 
 class ConsoleTest extends TestCase {
