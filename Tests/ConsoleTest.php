@@ -12,6 +12,8 @@ namespace Tholcomb\Symple\Console\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Tholcomb\Symple\Console\Commands\CacheCommand;
 use Tholcomb\Symple\Console\Commands\ContainerDebugCommand;
 use Tholcomb\Symple\Console\ConsoleProvider;
 use Tholcomb\Symple\Console\FrozenConsoleException;
@@ -60,11 +62,21 @@ class ConsoleTest extends TestCase {
 		ConsoleProvider::addCommand($c, TestCommandA::class, function () {});
 	}
 
-	public function testContainerDebugAdd() {
+	public function testAddBuiltins() {
 		$c = $this->getContainer();
-		ConsoleProvider::addContainerDebugCommand($c);
+		ConsoleProvider::addBuiltinCommands($c);
 		$app = ConsoleProvider::getConsole($c);
-		$a = $app->get(ContainerDebugCommand::getLazyName());
-		$this->assertTrue($a instanceof ContainerDebugCommand, 'Did not get command');
+		$builtins = [
+			ContainerDebugCommand::class,
+			CacheCommand::class,
+		];
+		foreach ($builtins as $b) {
+			try {
+				$a = $app->get(call_user_func([$b, 'getLazyName']));
+			} catch (CommandNotFoundException $e) {
+				$a = null;
+			}
+			$this->assertInstanceOf($b, $a, "Did not get command: '$b'");
+		}
 	}
 }

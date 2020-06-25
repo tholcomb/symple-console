@@ -15,13 +15,16 @@ use Pimple\Psr11\ServiceLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
+use Tholcomb\Symple\Console\Commands\CacheCommand;
 use Tholcomb\Symple\Console\Commands\ContainerDebugCommand;
 use Tholcomb\Symple\Core\AbstractProvider;
+use Tholcomb\Symple\Core\Cache\SympleCacheContainer;
 use Tholcomb\Symple\Core\UnregisteredProviderException;
 use function Tholcomb\Symple\Core\class_implements_interface;
 
 class ConsoleProvider extends AbstractProvider {
 	public const KEY_CONSOLE = 'console.app';
+	public const KEY_CACHE_CONTAINER = 'console.cache_container';
 	protected const PREFIX_CONSOLE_COMMANDS = 'console.command.';
 	protected const NAME = 'console';
 
@@ -48,6 +51,10 @@ class ConsoleProvider extends AbstractProvider {
 			$app->setCommandLoader(new FactoryCommandLoader($c['console.commands']));
 
 			return $app;
+		};
+
+		$c[static::KEY_CACHE_CONTAINER] = function () {
+			return new SympleCacheContainer();
 		};
 	}
 
@@ -77,10 +84,19 @@ class ConsoleProvider extends AbstractProvider {
 		$c['console.commands'] = array_merge($c['console.commands'], $arr);
 	}
 
+	/** @deprecated */
 	public static function addContainerDebugCommand(Container $c): void
 	{
 		self::addCommand($c, ContainerDebugCommand::class, function ($c) {
 			return new ContainerDebugCommand($c);
+		});
+	}
+
+	public static function addBuiltinCommands(Container $c): void
+	{
+		self::addContainerDebugCommand($c); // TODO: Replace with body of addContainerDebugCommand
+		self::addCommand($c, CacheCommand::class, function ($c) {
+			return new CacheCommand($c[static::KEY_CACHE_CONTAINER]);
 		});
 	}
 }
