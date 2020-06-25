@@ -10,26 +10,8 @@
 
 namespace Tholcomb\Symple\Console\Tests;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Tholcomb\Symple\Console\LazyCommandInterface;
+use Tholcomb\Symple\Console\Commands\AbstractCommand;
 
-class TestCommandA extends Command implements LazyCommandInterface {
+class TestCommandA extends AbstractCommand {
 	protected const NAME = 'test.cmd.a';
-
-	public static function getLazyName(): string
-	{
-		return static::NAME;
-	}
-
-	public function __construct()
-	{
-		parent::__construct(static::NAME);
-	}
-
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		// Blank
-	}
 }
