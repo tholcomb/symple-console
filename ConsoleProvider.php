@@ -11,6 +11,7 @@
 namespace Tholcomb\Symple\Console;
 
 use Pimple\Container;
+use Pimple\Psr11\ServiceLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
@@ -71,13 +72,14 @@ class ConsoleProvider extends AbstractProvider {
 		if (isset($c['console.commands'][$name])) throw new \InvalidArgumentException("Command '{$name}' already defined");
 		$key = static::PREFIX_CONSOLE_COMMANDS . $name;
 		$c[$key] = $definition;
-		$arr = [$name => function () use ($c, $key) { return $c[$key]; }];
+		$loc = new ServiceLocator($c, ['cmd' => $key]);
+		$arr = [$name => function () use ($loc) { return $loc->get('cmd'); }];
 		$c['console.commands'] = array_merge($c['console.commands'], $arr);
 	}
 
 	public static function addContainerDebugCommand(Container $c): void
 	{
-		self::addCommand($c, ContainerDebugCommand::class, function () use ($c) {
+		self::addCommand($c, ContainerDebugCommand::class, function ($c) {
 			return new ContainerDebugCommand($c);
 		});
 	}
