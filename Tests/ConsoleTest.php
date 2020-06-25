@@ -12,7 +12,6 @@ namespace Tholcomb\Symple\Console\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
-use Symfony\Component\Console\Application;
 use Tholcomb\Symple\Console\Commands\ContainerDebugCommand;
 use Tholcomb\Symple\Console\ConsoleProvider;
 use Tholcomb\Symple\Console\FrozenConsoleException;
@@ -37,10 +36,7 @@ class ConsoleTest extends TestCase {
 			$arr[TestCommandB::getLazyName()] = true;
 			return new TestCommandB();
 		});
-		$app = $c[ConsoleProvider::KEY_CONSOLE];
-		if (!$app instanceof Application) {
-			throw new \LogicException(sprintf("Did not get '%s'", Application::class));
-		}
+		$app = ConsoleProvider::getConsole($c);
 		$app->get(TestCommandA::getLazyName());
 		$this->assertTrue(isset($arr[TestCommandA::getLazyName()]), 'cmd A not loaded');
 		$this->assertFalse(isset($arr[TestCommandB::getLazyName()]), 'cmd B loaded early');
@@ -49,28 +45,19 @@ class ConsoleTest extends TestCase {
 	}
 
 	public function testPreventDoubleCommand() {
+		$this->expectException(\LogicException::class);
+
 		$c = $this->getContainer();
 		ConsoleProvider::addCommand($c, TestCommandA::class, function () {});
-		$caught = false;
-		try {
-			ConsoleProvider::addCommand($c, TestCommandA::class, function () {});
-		} catch (\Throwable|\Exception $e) {
-			$caught = true;
-			$this->assertTrue($e instanceof \LogicException, 'Exception not LogicException');
-		}
-		$this->assertTrue($caught, 'Did not catch exception');
+		ConsoleProvider::addCommand($c, TestCommandA::class, function () {});
 	}
 
 	public function testFrozenConsole() {
+		$this->expectException(FrozenConsoleException::class);
+
 		$c = $this->getContainer();
-		$app = $c[ConsoleProvider::KEY_CONSOLE];
-		$caught = false;
-		try {
-			ConsoleProvider::addCommand($c, TestCommandA::class, function () {});
-		} catch (FrozenConsoleException $e) {
-			$caught = true;
-		}
-		$this->assertTrue($caught, 'Did not catch exception');
+		ConsoleProvider::getConsole($c);
+		ConsoleProvider::addCommand($c, TestCommandA::class, function () {});
 	}
 
 	public function testContainerDebugAdd() {
