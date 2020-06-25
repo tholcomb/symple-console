@@ -36,11 +36,13 @@ class ConsoleProvider extends AbstractProvider {
 	public function register(Container $c)
 	{
 		parent::register($c);
+		$c['console.app.name'] = $this->name;
+		$c['console.app.version'] = $this->version;
 		$c['console.isFrozen'] = false;
 		$c['console.commands'] = [];
 		$c[static::KEY_CONSOLE] = function ($c) {
 			$c['console.isFrozen'] = true;
-			$app = new Application($this->name, $this->version);
+			$app = new Application($c['console.app.name'], $c['console.app.version']);
 			$app->setCatchExceptions(true);
 			$app->setCommandLoader(new FactoryCommandLoader($c['console.commands']));
 
