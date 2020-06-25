@@ -17,7 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ContainerDebugCommand extends AbstractCommand {
-	protected const NAME = 'pimple.debug';
+	protected const NAME = 'symple:container-debug';
 
 	private $c;
 
