@@ -10,6 +10,11 @@
         }
     ],
     "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Tholcomb\\Symple\\Console\\": ""
+        }
+    },
     "require": {
         "php": ">=7.2",
         "ext-json": "*",
@@ -17,11 +22,6 @@
         "symfony/console": "^5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
-    },
-    "autoload": {
-        "psr-4": {
-            "Tholcomb\\Symple\\Console\\": ""
-        }
+        "phpunit/phpunit": "^8.5 | ^9.5"
     }
 }
